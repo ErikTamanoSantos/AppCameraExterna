@@ -18,14 +18,25 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <Button
-        android:id="@+id/boton"
-        android:layout_width="223dp"
-        android:layout_height="42dp"
+        android:id="@+id/boton_cargar"
+        android:layout_width="191dp"
+        android:layout_height="56dp"
         android:text="Carregar Imatge"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.817" />
+
+    <Button
+        android:id="@+id/boton_foto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fer foto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.898" />
+        app:layout_constraintTop_toBottomOf="@+id/boton_cargar"
+        app:layout_constraintVertical_bias="0.306" />
 </androidx.constraintlayout.widget.ConstraintLayout>
