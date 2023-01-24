@@ -9,7 +9,6 @@ import androidx.core.content.FileProvider;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -56,12 +55,15 @@ public class MainActivity extends AppCompatActivity {
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
                     public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-                            Bundle extras = result.getData().getExtras();
-                            Bitmap imageBitmap = (Bitmap) extras.get("data");
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            //Intent data = result.getData();
+                            //Bundle extras = data.getExtras();
+                            // imageBitmap = (Bitmap) extras.get("data");
                             ImageView imageView = findViewById(R.id.img);
-                            imageView.setImageBitmap(imageBitmap);
+                            //imageView.setImageBitmap(imageBitmap);
+                            imageView.setImageURI(photoURI);
                         }
+
                     }
                 });
         boton_cargar.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         boton_foto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openSomeActivityForResult2(view);
+                dispatchTakePictureIntent();
             }
         });
     }
@@ -89,10 +91,39 @@ public class MainActivity extends AppCompatActivity {
         galleryActivityResultLauncher.launch(intent);
     }
 
-    public void openSomeActivityForResult2(View view) {
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
+        // Ensure that there's a camera activity to handle the intent
+        // Create the File where the photo should go
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+        }
+        // Continue only if the File was successfully created
+        if (photoFile != null) {
+            photoURI = FileProvider.getUriForFile(this,
+                    "com.example.appcameraexterna.fileprovider",
+                    photoFile);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+        }
         cameraActivityResultLauncher.launch(takePictureIntent);
-
     }
 }
